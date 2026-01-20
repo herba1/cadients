@@ -10,6 +10,8 @@ import {
   BALLS_PER_CLUSTER,
   MAX_CLUSTERS,
 } from "./shaders/metaball.frag";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 // Helper to convert hex color to THREE.Color
 function hexToVec3(hex: string): THREE.Vector3 {
@@ -38,6 +40,11 @@ const BALL_RADIUS_MULTIPLIERS = [
 
 export function GradientPlane() {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const clustersRef = useRef([
+    { x: 0.45, y: 0.5, spread: 0.14 },
+    { x: 1.75, y: 0.48, spread: 0.14 },
+    { x: 1.1, y: 0.55, spread: 0.14 },
+  ]);
 
   // Metaball controls
   const metaballControls = useControls("Metaballs", {
@@ -61,6 +68,40 @@ export function GradientPlane() {
     background: "#0a0a0a",
   });
 
+  useGSAP(() => {
+    const tl = gsap.timeline({ delay: 0.2 });
+
+    // Animate Cluster 1 (Left) moving to the center
+    tl.from(clustersRef.current[0], {
+      x: 0.4,
+      y: 0.25,
+      spread: 0.1, // Make it explode slightly
+      duration: 2,
+      ease: "power4.out",
+    });
+    tl.from(
+      clustersRef.current[2],
+      {
+        x: 1.02,
+        y: 0.29,
+        spread: 0.1, // Contract it tight
+        duration: 2,
+        ease: "power4.out",
+      },
+      "<+=0.1",
+    ).from(
+      clustersRef.current[1],
+      {
+        x: 1.65,
+        y: 0.25,
+        spread: 0.08,
+        duration: 2,
+        ease: "power4.out",
+      },
+      "<+=0.1",
+    );
+  }, []);
+
   // Cluster 1 controls - positioned left side
   const cluster1 = useControls("Cluster 1", {
     centerX: { value: 0.4, min: 0.0, max: 2.0, step: 0.01 },
@@ -77,8 +118,8 @@ export function GradientPlane() {
 
   // Cluster 2 controls - positioned right side (similar to cluster 1)
   const cluster2 = useControls("Cluster 2", {
-    centerX: { value: 1.5, min: 0.0, max: 2.0, step: 0.01 },
-    centerY: { value: 0.5, min: 0.0, max: 1.0, step: 0.01 },
+    centerX: { value: 1.65, min: 0.0, max: 2.0, step: 0.01 },
+    centerY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
     // Same spread as cluster 1
     spread: { value: 0.14, min: 0.01, max: 0.3, step: 0.005 },
     // Same radius as cluster 1
@@ -91,7 +132,7 @@ export function GradientPlane() {
 
   // Cluster 3 controls - positioned center-top (similar to cluster 1)
   const cluster3 = useControls("Cluster 3", {
-    centerX: { value: 1.0, min: 0.0, max: 2.0, step: 0.01 },
+    centerX: { value: 1.02, min: 0.0, max: 2.0, step: 0.01 },
     centerY: { value: 0.55, min: 0.0, max: 1.0, step: 0.01 },
     // Same spread as cluster 1
     spread: { value: 0.14, min: 0.01, max: 0.3, step: 0.005 },
@@ -182,21 +223,34 @@ export function GradientPlane() {
       clusterIdx < metaballControls.clusterCount;
       clusterIdx++
     ) {
+      const activeState = clustersRef.current[clusterIdx];
+
+      const noiseX = Math.sin(t * 0.5 + clusterIdx) * 0.01;
+      const noiseY = Math.cos(t * 0.3 + clusterIdx) * 0.01;
+
       const cluster = clusters[clusterIdx];
 
-      // Calculate cluster center position (animated)
-      const clusterCenterX =
-        cluster.centerX +
-        Math.sin(t * cluster.speedX + clusterIdx * 2.0) * cluster.moveRangeX;
-      const clusterCenterY =
-        cluster.centerY +
-        Math.cos(t * cluster.speedY + clusterIdx * 1.5) * cluster.moveRangeY;
+      // Calculate cluster center position (animated) OLDOLDOLD
+      // const clusterCenterX =
+      //   cluster.centerX +
+      //   Math.sin(t * cluster.speedX + clusterIdx * 2.0) * cluster.moveRangeX;
+      // const clusterCenterY =
+      //   cluster.centerY +
+      //   Math.cos(t * cluster.speedY + clusterIdx * 1.5) * cluster.moveRangeY;
+
+      // NEW
+      const clusterCenterX = activeState.x + noiseX;
+      const clusterCenterY = activeState.y + noiseY;
+      const currentSpread = activeState.spread;
 
       // Position each ball in the cluster - TIGHT arrangement for overlap
       // Ball arrangement: center ball + 4 surrounding balls in a tight cross/flower pattern
-      // Add rotation around cluster center
-      const clusterRotation =
-        t * metaballControls.rotationSpeed + clusterIdx * ((Math.PI * 2) / 3);
+      // Add rotation around cluster center OLD OLD OLD
+      // const clusterRotation =
+      //   t * metaballControls.rotationSpeed + clusterIdx * ((Math.PI * 2) / 3);
+
+      // NEW
+      const clusterRotation = t * metaballControls.rotationSpeed + clusterIdx;
 
       for (let ballIdx = 0; ballIdx < BALLS_PER_CLUSTER; ballIdx++) {
         const globalIdx = clusterIdx * BALLS_PER_CLUSTER + ballIdx;
@@ -215,8 +269,8 @@ export function GradientPlane() {
           const baseAngle = ((ballIdx - 1) / 4) * Math.PI * 2;
           const rotatedAngle = baseAngle + clusterRotation;
           // Very small offset - balls should heavily overlap
-          offsetX = Math.cos(rotatedAngle) * cluster.spread;
-          offsetY = Math.sin(rotatedAngle) * cluster.spread;
+          offsetX = Math.cos(rotatedAngle) * currentSpread;
+          offsetY = Math.sin(rotatedAngle) * currentSpread;
         }
 
         // Add subtle organic movement (very small wobble to keep cohesion)

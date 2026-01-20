@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="w-full relative h-lvh">
       <Leva collapsed />
-      <div className="absolute  inset-0 z-0">
+      <div className="absolute inset-0 z-0">
         <Experience />
       </div>
       <Hero />

@@ -4,3 +4,7 @@
 :root{
     font-family: "helvetica-lt-pro", sans-serif;
 }
+
+@theme{
+    --tracking-tightest: -0.56rem;
+}
