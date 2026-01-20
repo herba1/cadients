@@ -1,2 +1,6 @@
+@import url("https://use.typekit.net/kgk2mmf.css");
 @import "tailwindcss";
 
+:root{
+    font-family: "helvetica-lt-pro", sans-serif;
+}
