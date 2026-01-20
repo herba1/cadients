@@ -4,9 +4,6 @@ import gsap from "gsap";
 import SplitText from "gsap/src/SplitText";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
-import { TLSSocket } from "tls";
-import { text } from "stream/consumers";
-import { Tetrahedron } from "@react-three/drei";
 
 gsap.registerPlugin(SplitText);
 

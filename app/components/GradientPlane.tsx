@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useMemo, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Leva, useControls } from "leva";
+import { useControls } from "leva";
 import * as THREE from "three";
 import { vertexShader } from "./shaders/metaball.vert";
 import {
@@ -182,6 +182,7 @@ export function GradientPlane() {
         value: metaballControls.clusterCount * BALLS_PER_CLUSTER,
       },
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Log uniform structure on mount for verification
@@ -195,6 +196,7 @@ export function GradientPlane() {
       "- Active balls:",
       metaballControls.clusterCount * BALLS_PER_CLUSTER,
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useFrame((state) => {
