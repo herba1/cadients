@@ -115,22 +115,30 @@ export default function Hero() {
         );
 
       facetl
-        .from(".face1", {
-          ease: "elastic",
-          rotate: gsap.utils.random(-50, 50),
-          duration: 2,
-          scale: 0.5,
-          opacity: 0,
-          filter: "blur(2px)",
-        }, 0)
-        .from(".face2", {
-          ease: "elastic",
-          rotate: gsap.utils.random(-50, 50),
-          duration: 2,
-          scale: 0.5,
-          opacity: 0,
-          filter: "blur(2px)",
-        }, 0.1)
+        .from(
+          ".face1",
+          {
+            ease: "elastic",
+            rotate: gsap.utils.random(-50, 50),
+            duration: 2,
+            scale: 0.5,
+            opacity: 0,
+            filter: "blur(2px)",
+          },
+          0,
+        )
+        .from(
+          ".face2",
+          {
+            ease: "elastic",
+            rotate: gsap.utils.random(-50, 50),
+            duration: 2,
+            scale: 0.5,
+            opacity: 0,
+            filter: "blur(2px)",
+          },
+          0.1,
+        )
         .to(".face1,.face2", {
           yPercent: -30,
           repeat: -1,
@@ -151,11 +159,11 @@ export default function Hero() {
   return (
     <div
       ref={container}
-      className=" relative w-full h-full flex flex-col items-start justify-end z-10 max-w-full max-h-full overflow-hidden px-6"
+      className=" relative w-full h-full flex flex-col items-start justify-end z-10 max-w-full max-h-full overflow-hidden p-2 md:px-6"
     >
-      <div className="md:text-[6.5vw]! md:max-w-8/10 text-5xl relative tracking-tighter md:tracking-tightest w-fit h-fit font-bold text-neutral-800 text-shadow-sm my-10 text-shadow-black/0 ">
-        <div className="absolute inset-0 hero__bg -z-10 bg-white blur-2xl rounded-full scale-x-100"></div>
-        <p className="bg-clip-text hero__text invisible bg-linear-to-b max-w-full w-full from-zinc-400 to-50% to-zinc-800">
+      <div className="md:text-[6.5vw]! md:max-w-8/10 text-5xl relative tracking-tighter md:tracking-[-0.4vw] w-fit h-fit font-bold text-neutral-800 text-shadow-sm md:my-10 text-shadow-black/0 ">
+        <div className="absolute inset-0 hero__bg -z-10 bg-white blur-[100px] rounded-full scale-x-100"></div>
+        <p className="bg-clip-text hero__text text-pretty invisible bg-linear-to-b max-w-full w-full from-zinc-400 to-50% to-zinc-800">
           <span
             className={`text-1 font-normal tracking-tighter ${lastik.className}`}
           >
