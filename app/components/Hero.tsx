@@ -4,8 +4,10 @@ import gsap from "gsap";
 import SplitText from "gsap/src/SplitText";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
+import CustomBounce from "gsap/dist/CustomBounce";
+import { CustomEase } from "gsap/all";
 
-gsap.registerPlugin(SplitText);
+gsap.registerPlugin(SplitText, CustomBounce, CustomEase);
 
 const lastik = localFont({
   src: "../../public/fonts/lastikfont.otf",
@@ -36,16 +38,31 @@ export default function Hero() {
         reduceWhiteSpace: false,
       });
 
+      const facetl = gsap.timeline({ paused: true });
+
       gsap.set([text1.chars, text2.chars, text4.chars, text6.chars], {
         opacity: 0,
       });
+      gsap.set(".hero__text", {
+        visibility: "visible",
+      });
+
+      gsap.from(".hero__bg", {
+        scale: 2,
+        ease: "power4.inOut",
+      });
 
       gsap
-        .timeline({ delay: 0 })
+        .timeline({
+          delay: 0.7,
+          onComplete: () => {
+            facetl.play();
+          },
+        })
         .to(text1.chars, {
           opacity: 1,
           duration: 0,
-          stagger: 0.1,
+          stagger: 0.08,
         })
         .fromTo(
           text2.chars,
@@ -59,9 +76,8 @@ export default function Hero() {
             duration: 1,
             ease: "power4.out",
             stagger: 0.015,
-            delay: 1,
           },
-          "",
+          "-=0.2",
         )
         .to(
           text4.chars,
@@ -85,18 +101,49 @@ export default function Hero() {
           {
             yPercent: 0,
             opacity: 1,
-            duration: 1.5,
+            duration: 1,
             ease: "power4.out",
-            stagger: 0.025,
-            onComplete:()=>{
+            stagger: 0.015,
+            onComplete: () => {
               text1.revert();
               text2.revert();
               text4.revert();
               text6.revert();
-            }
+            },
           },
-          "<+=0.25",
+          "<+=0.5",
         );
+
+      facetl
+        .from(".face1", {
+          ease: "elastic",
+          rotate: gsap.utils.random(-50, 50),
+          duration: 2,
+          scale: 0.5,
+          opacity: 0,
+          filter: "blur(2px)",
+        }, 0)
+        .from(".face2", {
+          ease: "elastic",
+          rotate: gsap.utils.random(-50, 50),
+          duration: 2,
+          scale: 0.5,
+          opacity: 0,
+          filter: "blur(2px)",
+        }, 0.1)
+        .to(".face1,.face2", {
+          yPercent: -30,
+          repeat: -1,
+          duration: 2.5,
+          repeatDelay: 0,
+          stagger: 0.2,
+          ease: CustomBounce.create("myBounce", {
+            strength: 0.7,
+            endAtStart: true,
+            squash: 1,
+            squashID: "myBounce-squash",
+          }),
+        });
     },
     { scope: container, dependencies: [] },
   );
@@ -107,8 +154,8 @@ export default function Hero() {
       className=" relative w-full h-full flex flex-col items-start justify-end z-10 max-w-full max-h-full overflow-hidden px-6"
     >
       <div className="md:text-[6.5vw]! md:max-w-8/10 text-5xl relative tracking-tighter md:tracking-tightest w-fit h-fit font-bold text-neutral-800 text-shadow-sm my-10 text-shadow-black/0 ">
-        <div className="absolute inset-0 -z-10 bg-white blur-2xl rounded-full scale-x-120"></div>
-        <p className="bg-clip-text bg-linear-to-b max-w-full w-full from-zinc-400 to-50% to-zinc-800">
+        <div className="absolute inset-0 hero__bg -z-10 bg-white blur-2xl rounded-full scale-x-100"></div>
+        <p className="bg-clip-text hero__text invisible bg-linear-to-b max-w-full w-full from-zinc-400 to-50% to-zinc-800">
           <span
             className={`text-1 font-normal tracking-tighter ${lastik.className}`}
           >
@@ -120,9 +167,9 @@ export default function Hero() {
           >
             Developer,
           </span>
-          <span className="text-6">
-            &nbsp;currently open for work <span>=)</span>{" "}
-          </span>
+          <span className="text-6">&nbsp;currently open for work </span>
+          <span className="face1 inline-block align-top">☺</span>
+          <span className="face2 inline-block align-top">☻</span>
         </p>
       </div>
     </div>

@@ -21,11 +21,11 @@ function hexToVec3(hex: string): THREE.Vector3 {
 
 // Retro Atari-style rainbow colors (5 colors for the rainbow gradient)
 const RETRO_RAINBOW = [
-  "#FF0000", // Red
-  "#FF8C00", // Orange
-  "#FFFF00", // Yellow
-  "#00FF00", // Green
-  "#00BFFF", // Cyan/Blue
+  "#c68903", 
+  "#ffff00", 
+  "#ffff00", 
+  "#ffff00", 
+  "#ffff00", 
 ];
 
 // Varied radius multipliers for each ball position within a cluster
@@ -55,7 +55,7 @@ export function GradientPlane() {
     // Control how much the ball sizes vary (0 = all same, 1 = full variation)
     sizeVariation: { value: 0.85, min: 0.0, max: 1.5, step: 0.05 },
     // Rotation speed for balls around cluster center
-    rotationSpeed: { value: 0.2, min: -2.0, max: 2.0, step: 0.05 },
+    rotationSpeed: { value: 1.3, min: -2.0, max: 2.0, step: 0.05 },
   });
 
   // Rainbow color controls (shared across all clusters)
@@ -69,7 +69,7 @@ export function GradientPlane() {
   });
 
   useGSAP(() => {
-    const tl = gsap.timeline({ delay: 0.2 });
+    const tl = gsap.timeline();
 
     // Animate Cluster 1 (Left) moving to the center
     tl.from(clustersRef.current[0], {
@@ -88,7 +88,7 @@ export function GradientPlane() {
         duration: 2,
         ease: "power4.out",
       },
-      "<+=0.1",
+      "<+=0.2",
     ).from(
       clustersRef.current[1],
       {
@@ -98,7 +98,7 @@ export function GradientPlane() {
         duration: 2,
         ease: "power4.out",
       },
-      "<+=0.1",
+      "<+=0.2",
     );
   }, []);
 
