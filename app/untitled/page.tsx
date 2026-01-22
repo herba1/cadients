@@ -47,31 +47,74 @@ export default function Experience() {
             ease: "power4.out",
           });
         });
+
+        setTimeout(() => {
+          const event = new Event("mouseenter", {
+            cancelable: true,
+          });
+          target.dispatchEvent(event);
+          setTimeout(() => {
+            const event = new Event("mouseleave", {
+              cancelable: true,
+            });
+            target.dispatchEvent(event);
+          }, 400);
+        }, 1000);
       };
 
       if (link.current && untitled.current) {
         createTween(link.current);
         createTween(untitled.current);
       }
+
+      const heroText = SplitText.create(".hero__tag", {
+        type: "chars,words",
+      });
+      gsap.set(".hero__tag", {
+        opacity: 1,
+      });
+
+      gsap.from(heroText.chars, {
+        opacity: 0,
+        duration: 0.01,
+        stagger: {
+          amount: 1,
+          ease: "linear",
+        },
+      });
+
+      gsap.set(".fade-in", {
+        visibility: "visible",
+      });
+      gsap.from(".fade-in", {
+        delay: 0.8,
+        opacity: 0,
+        scale: 0.8,
+        yPercent: -50,
+        filter: "blur(2px)",
+        ease: "power3.out",
+        duration: 0.6,
+        stagger: 0.08,
+      });
     },
     { scope: container, dependencies: [] },
   );
 
   return (
-    <div className="w-full relative h-dvh bg-[#1f1f1f]">
+    <div className="relative h-dvh w-full bg-[#191919]">
       <Leva hidden />
       <CD />
       <div
         ref={container}
-        className={`hero w-full h-full z-10 p-10 flex items-end tracking-tighter font-medium ${inter.className} `}
+        className={`hero z-10 flex h-full w-full items-end p-10 font-medium tracking-tighter ${inter.className} `}
       >
-        <header className="fixed mix-blend-difference md:mix-blend-normal bg-transparent top-0 left-0 flex align-top w-full p-5 md:p-10 justify-between ">
-          <p className="text-4xl mix-blend-difference text-white max-w-md">
+        <header className="fixed top-0 left-0 flex w-full justify-between bg-transparent p-5 align-top mix-blend-difference md:p-10 md:mix-blend-normal">
+          <p className="hero__tag max-w-md text-4xl text-white opacity-0 mix-blend-difference">
             A sacred place for your work-in-progress music
           </p>
-          <nav className="items-center hidden md:flex h-fit gap-10">
+          <nav className="hidden h-fit items-center gap-10 md:flex">
             <a
-              className="text-lg link text-white "
+              className="link fade-in invisible text-lg text-white"
               href="https://untitled.stream/pricing"
               ref={link}
               onMouseEnter={() => tl.current.play(0)}
@@ -80,21 +123,21 @@ export default function Experience() {
             </a>
             <a
               href="https://untitled.stream/login"
-              className="active:scale-95 hover:scale-105 transition-transform will-change-transform ease-in-out duration-200 cursor-pointer text-lg font-medium px-6 py-3 bg-white rounded-full   mix-black"
+              className="fade-in mix-black invisible cursor-pointer rounded-full bg-white px-6 py-3 text-lg font-medium"
             >
               Enter App
             </a>
           </nav>
         </header>
 
-        <div className="w-full h-fit items-end flex justify-between">
+        <div className="flex h-fit w-full flex-col justify-between gap-2 md:flex-row md:items-end">
           <p
             ref={untitled}
-            className="text-white mix-blend-difference text-4xl"
+            className="fade-in invisible text-4xl text-white mix-blend-difference"
           >
             [untitled]
           </p>
-          <p className="text-white text-xs mix-blend-difference">
+          <p className="fade-in invisible text-xs text-white mix-blend-difference">
             This is unoffical and unafilliated with [untitled] by{" "}
             <a href="https://x.com/herb_dev">@herb</a>
           </p>
